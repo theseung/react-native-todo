@@ -13,7 +13,7 @@
 
 ***
 
-[처음배우는 리액트 네이티브 Github](https://github.com/Alchemist85K/my-first-react-native){:target="_blank"}
+[처음배우는 리액트 네이티브 Github](https://github.com/Alchemist85K/my-first-react-native)
 
 소스코드는 한빛미디어의 처음배우는 리액트 네이티브를 기반으로 하고 있습니다.
 
