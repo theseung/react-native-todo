@@ -1,7 +1,4 @@
-# react-native-todo
-
-## React Native로 개발하는 Todo List
-
+# React Native로 개발하는 Todo List
 
 ### 실행방법
 
