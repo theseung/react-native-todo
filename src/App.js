@@ -4,6 +4,8 @@ import styled, { ThemeProvider } from 'styled-components/native';
 import { theme } from './theme';
 import Input from './components/Input';
 import Task from './components/Task';
+import AsyncStorage from '@react-native-community/async-storage';
+import AppLoading from 'expo-app-loading';
 
 const Container = styled.SafeAreaView`
   flex:1;
@@ -27,15 +29,24 @@ const List = styled.ScrollView`
 
 export default function App(){
   const width = Dimensions.get('window').width;
-
+  
+  const [isReady, setIsReady] = useState(false);
   const [newTask, setNewTask] = useState('');
+  const [tasks, setTasks] = useState({});
 
-  const [tasks, setTasks] = useState({
-    "1":{ id:1, text: "hanbit", completed: false, change: false},
-    "2":{ id:2, text: "React Native", completed: false, change: false},
-    "3":{ id:3, text: "React Native Sample", completed: false, change: false},
-    "4":{ id:4, text: "Edit TODO Item", completed: false, change: false},
-  })
+  const _saveTasks = async tasks => {
+    try{
+      await AsyncStorage.setItem('tasks',JSON.stringify(tasks));
+      setTasks(tasks);
+    }catch (e){
+      console.log(e);
+    }
+  }
+
+  const _loadTasks = async tasks => {
+    const loadedTasks = await AsyncStorage.getItem('tasks');
+    setTasks(JSON.parse(loadedTasks || '{}'));
+  }
   
   const _addTask = () => {
     const ID = Date.now().toString();
@@ -43,7 +54,7 @@ export default function App(){
       [ID]: {id:ID, text:newTask, completed:false},
     };
     setNewTask('');
-    setTasks({...tasks,...newTaskObject});
+    _saveTasks({...tasks,...newTaskObject});
   }
 
   const _handleTextChnage = text => {
@@ -53,16 +64,16 @@ export default function App(){
   const _deleteTask = idx => {
     const deleteTasks = Object.assign({}, tasks);
     delete deleteTasks[idx];
-    setTasks(deleteTasks);
+    _saveTasks(deleteTasks);
   }
 
   const _toggleTask = idx => {
     const changeTasks = Object.assign({}, tasks);
     changeTasks[idx].completed = changeTasks[idx].completed ? false : true;
-    setTasks(changeTasks);
+    _saveTasks(changeTasks);
   }
 
-  return (
+  return isReady ? (
     <ThemeProvider theme={theme}>
       <Container>
         <StatusBar
@@ -115,5 +126,11 @@ export default function App(){
         </List>
       </Container>
     </ThemeProvider>
+  ) : (
+    <AppLoading
+      startAsync={_loadTasks}
+      onFinish={() => setIsReady(true)}
+      onError={console.error}
+    />
   )
 }
