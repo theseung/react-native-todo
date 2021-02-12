@@ -12,7 +12,7 @@ const StyledInput = styled.TextInput.attrs(({theme}) => ({
   padding:15px 20px;
   border-radius:10px;
   background-color:${({theme}) => theme.itemBackground};
-  font-size:25px;
+  font-size:20px;
   color:${({theme}) => theme.text};
 `;
 
